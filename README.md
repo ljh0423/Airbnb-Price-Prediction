@@ -30,12 +30,10 @@ Register and promote it to Production
 
 Serve it using:
 
-bash
-Copy
-Edit
+```bash
 mlflow models serve -m "models:/RF-Hyperopt/Production" --env-manager=local -h 0.0.0.0
 Access the REST API at: http://localhost:5000
-
+```
 You can also automate this via the MLflow Python API. See the MLflow docs for full API details.
 
 🐳 Docker Images
@@ -55,30 +53,26 @@ Main container for running training code.
 
 Key libraries: pyspark, mlflow, h2o, hyperopt, nltk, matplotlib, etc.
 
-Dockerfile
-Copy
-Edit
+```Dockerfile
 FROM python:3.9.7
 # Installs Spark, OpenJDK, Python libraries and training scripts
 Once built, push the images to Docker Hub or a private registry (e.g., AWS ECS).
-
+```
 ☸️ Kubernetes & Helm Deployment
 Once the images are available, deploy the system using:
 
-bash
-Copy
-Edit
+```bash
 kubectl apply -f ./k8s
 # or with Helm:
 helm install mlops mlops-chart
+```
 🔁 Port Forwarding for Local Access
-bash
-Copy
-Edit
+```bash
 kubectl port-forward services/mlflow-tracking 5000:5000
 kubectl port-forward services/spark-master 8080:8080
 kubectl port-forward services/minio 9000:9000 9001:9001
 kubectl port-forward services/notebooks 8888:8888
+```
 🔄 CI/CD with CircleCI and ArgoCD
 ✅ CircleCI: Continuous Integration
 Configured via .circleci/config.yml, it:
@@ -87,9 +81,7 @@ Builds Docker images on commit
 
 Pushes images and Helm charts to repositories
 
-yaml
-Copy
-Edit
+```yaml
 version: 2.1
 jobs:
   docker-build:
@@ -104,20 +96,18 @@ jobs:
             docker build -t spark-worker:3.3 -f ./Docker/Spark-worker/Dockerfile .
             docker build -t mlflow-tracking -f ./Docker/mlflow/Dockerfile .
             docker build -t pyspark-runner -f ./Docker/pySpark-runner/Dockerfile .
+```
 🚢 ArgoCD: Continuous Deployment
 Install ArgoCD:
 
-bash
-Copy
-Edit
+```bash
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
 Port-forward to access UI:
-
-bash
-Copy
-Edit
+```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
 Configure your application in the Argo UI using your Helm/chart Git repository.
 
 🔮 Future Improvements
